@@ -1,14 +1,10 @@
-# Ignore all
+# Ignore Files without extensions
 *
-
-# Unignore all with extensions
 !*.*
-
-# Unignore all dirs
 !*/
+# ... except Makefile
+!Makefile
 
+# Haskell build artifacts
 *.o
 *.hi
-
-hack/
-

@@ -1,12 +1,7 @@
 import System.IO (readFile)
 import System.Environment (getArgs)
 
-split :: (Char -> Bool) -> String -> [String]
-split p s =
-  case dropWhile p s of
-    "" -> []
-    s' -> w : split p s''
-      where (w, s'') = break p s'
+import Lib.List (splitOn)
 
 pair :: [a] -> (a,a)
 pair [x,y] = (x,y)
@@ -19,8 +14,8 @@ disjoint (a,b) (x,y) = (a < x && b < x) || (a > y && b > y)
 
 parse :: [Char] -> [[(Int,Int)]]
 parse str = map parsePair . lines $ str
-  where parseRange = map read . split (=='-')
-        parsePair = (map pair . map parseRange . split (==','))
+  where parseRange = map read . splitOn (=='-')
+        parsePair = (map pair . map parseRange . splitOn (==','))
 
 part1 :: [Char] -> Int
 part1 str = length . filter contains . parse $ str

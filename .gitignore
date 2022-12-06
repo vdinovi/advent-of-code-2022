@@ -8,3 +8,5 @@
 # Haskell build artifacts
 *.o
 *.hi
+
+sample.txt

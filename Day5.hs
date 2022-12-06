@@ -77,10 +77,10 @@ parseInstruction ((TWord "move"):ts) = Move count from to
 parseInstruction ((TWord op):ts) = error $ "invalid instruction " ++ op
 parseInstruction _ = error $ "invalid instruction"
 
-update :: [Stack] -> Instruction -> [Stack]
-update stacks (Move count from to) = map (update' (from,a) (to,b)) . zip [0..] $ stacks
+update :: ([Char] -> [Char]) -> [Stack] -> Instruction -> [Stack]
+update order stacks (Move count from to) = map (update' (from,a) (to,b)) . zip [0..] $ stacks
   where a = drop count $ stacks !! from
-        b = (reverse . take count $ stacks !! from) ++ (stacks !! to)
+        b = (order . take count $ stacks !! from) ++ (stacks !! to)
 
 update' :: (Int,Stack) -> (Int,Stack) -> (Int,Stack) -> Stack
 update' (i,x) (j,y) (k,z)
@@ -93,10 +93,19 @@ part1 str = map head . filter (not . null) $ stacks'
   where (d,t) = span (not . null) . lines $ str
         stacks = parseData . tokenizeData $ d
         instrs = parseInstructions . tokenizeText $ tail t
-        stacks' = foldl (\acc instr -> update acc instr) stacks instrs
+        stacks' = foldl (\acc instr -> update reverse acc instr) stacks instrs
+
+part2 :: [Char] -> [Char]
+part2 str = map head . filter (not . null) $ stacks'
+  where (d,t) = span (not . null) . lines $ str
+        stacks = parseData . tokenizeData $ d
+        instrs = parseInstructions . tokenizeText $ tail t
+        stacks' = foldl (\acc instr -> update id acc instr) stacks instrs
 
 main :: IO ()
 main = do
   args <- getArgs
   contents <- readFile . head $ args
   print . part1 $ contents
+  print . part2 $ contents
+
